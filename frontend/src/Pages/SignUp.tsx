@@ -1,20 +1,30 @@
-import { useState } from "react";
+import  { useState } from "react";
 import { Link } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 
-const Login = () => {
+const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handelChange = () => {};
-  const handelSubmit = () => {};
+  const handelChange = ()=>{}
+  const handelSubmit = ()=>{}
 
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-[27vw] mx-auto flex-col md:flex-row md:items-center gap-5">
+        {/* Right */}
         <div className="flex-1">
           <form className="flex flex-col gap-4" onSubmit={handelSubmit}>
+            <div className="">
+              <Label value="Your Username" />
+              <TextInput
+                type="text"
+                placeholder="Username"
+                id="username"
+                onChange={handelChange}
+              />
+            </div>
             <div className="">
               <Label value="Your Email" />
               <TextInput
@@ -67,4 +77,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
