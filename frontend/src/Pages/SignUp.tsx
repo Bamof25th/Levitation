@@ -60,7 +60,7 @@ const SignUp = () => {
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account ?</span>
-            <Link to="/signin" className="text-blue-500  hover:underline">
+            <Link to="/login" className="text-blue-500  hover:underline">
               Sign In
             </Link>
             <div className="">
