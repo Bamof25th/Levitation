@@ -1,14 +1,68 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { ChangeEvent, FormEventHandler, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInFaliure,
+  signInStart,
+  signInSuccess,
+} from "../redux/reducer/userSlice";
+import { User } from "../types/types";
+
+export interface userSliceInitialState {
+  currentUser: User | null;
+  loading: boolean;
+  error: string | null;
+}
 
 const Login = () => {
-  const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // *useNavigate
+  const navigate = useNavigate();
 
-  const handelChange = () => {};
-  const handelSubmit = () => {};
+  //  *useStates
+  const [formData, setFormData] = useState({});
+  // const [errorMessage, setErrorMessage] = useState(null);
+  // const [loading, setLoading] = useState(false);
+
+  //* useDispatch (redux)
+  const dispatch = useDispatch();
+
+  //* useSelector (redux)
+  const { loading, error: errorMessage } = useSelector(
+    (state: { user: userSliceInitialState }) => state.user
+  );
+
+  // *Functions
+  const handelChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+
+  const handelSubmit = async (
+    e: FormEventHandler<HTMLFormElement> | undefined
+  ) => {
+    e.preventDefault();
+    if (!formData) {
+      return dispatch(signInFaliure("Please fill all fields are required"));
+    }
+    try {
+      dispatch(signInStart());
+      const res = await fetch("/v1/api/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        return dispatch(signInFaliure(data.message));
+      }
+      dispatch(signInSuccess(data));
+      if (res.ok) {
+        navigate("/");
+      }
+    } catch (error) {
+      return dispatch(signInFaliure(error.message));
+    }
+  };
 
   return (
     <div className="min-h-screen mt-20">
@@ -51,7 +105,7 @@ const Login = () => {
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account ?</span>
             <Link to="/signup" className="text-blue-500  hover:underline">
-              Sign In
+              Sign Up
             </Link>
             <div className="">
               {errorMessage && (

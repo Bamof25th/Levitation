@@ -1,19 +1,50 @@
-import  { useState } from "react";
-import { Link } from "react-router-dom";
+import { ChangeEvent, FormEventHandler, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 
 const SignUp = () => {
+  // *useNavigate
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handelChange = ()=>{}
-  const handelSubmit = ()=>{}
-
+  const handelChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+  const handelSubmit = async (
+    e: FormEventHandler<HTMLFormElement> | undefined
+  ) => {
+    e.preventDefault();
+    if (!formData) {
+      const message: string = "Please fill all fields are required";
+      return setErrorMessage(message);
+    }
+    try {
+      setLoading(true);
+      setErrorMessage("");
+      const res = await fetch("/v1/api/user/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        setErrorMessage(data.message);
+      }
+      setLoading(false);
+      if (res.ok) {
+        navigate("/login");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-[27vw] mx-auto flex-col md:flex-row md:items-center gap-5">
-        {/* Right */}
         <div className="flex-1">
           <form className="flex flex-col gap-4" onSubmit={handelSubmit}>
             <div className="">
@@ -46,7 +77,7 @@ const SignUp = () => {
             <Button
               gradientDuoTone="redToYellow"
               type="submit"
-              //   disabled={loading}
+              disabled={loading}
             >
               {loading ? (
                 <>
