@@ -3,6 +3,7 @@ import { connectDB } from "./utils/mongoose.js";
 import { config } from "dotenv";
 
 import userRouter from "./routes/user.js";
+import billRouter from "./routes/bill.js";
 
 config({
   path: "./.env",
@@ -14,23 +15,22 @@ connectDB(process.env.DB_URL);
 
 app.use(express.json());
 
-//routes
+// routes
 
 app.use("/v1/api/user", userRouter);
-
-
+app.use("/v1/api/bill", billRouter);
 
 // * error handeling midlleware
 app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(statusCode).json({
-      success: false,
-      statusCode,
-      message,
-    });
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
   });
-  
+});
+
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });
