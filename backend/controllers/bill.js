@@ -1,6 +1,7 @@
 import Bill from "../model/bill.js";
 import Item from "../model/item.js";
 import User from "../model/user.js";
+import { errorHandler } from './../utils/error.js';
 
 export const createBillItem = async (req, res, next) => {
   const { productName, productQty, productRate } = req.body;
@@ -21,6 +22,28 @@ export const createBillItem = async (req, res, next) => {
     next(error);
   }
 };
+export const getBillItem = async (req, res, next) => {
+
+  try {
+    const items = await Item.find({});
+
+    res.status(200).json({ message: "all Items", items });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteItemsInBill= async (req, res, next) => {
+
+  try {
+    const items = await Item.deleteMany({});
+
+    res.status(200).json({ message: "deleted all Items", items });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export const createBill = async (req, res, next) => {
   try {
@@ -36,7 +59,10 @@ export const createBill = async (req, res, next) => {
 
     await bill.save;
 
+    
+
     res.status(200).json({ message: "bill created", bill });
+
   } catch (error) {
     next(error);
   }

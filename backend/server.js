@@ -1,6 +1,7 @@
 import express from "express";
 import { connectDB } from "./utils/mongoose.js";
 import { config } from "dotenv";
+import cors from "cors";
 
 import userRouter from "./routes/user.js";
 import billRouter from "./routes/bill.js";
@@ -14,6 +15,9 @@ const app = express();
 connectDB(process.env.DB_URL);
 
 app.use(express.json());
+
+//CORS policy configuration
+app.use(cors());
 
 // routes
 
