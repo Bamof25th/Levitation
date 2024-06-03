@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
-// 
+//
 import { errorHandler } from "../utils/error.js";
 import { isValidEmail } from "../utils/features.js";
 import User from "./../model/user.js";
@@ -65,6 +65,15 @@ export const signIn = async (req, res, next) => {
         httpOnly: true,
       })
       .json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const signOut = async (req, res, next) => {
+  //remove the token from the user
+  try {
+    res.clearCookie("access_token").status(200).json("signOut successfully");
   } catch (error) {
     next(error);
   }
